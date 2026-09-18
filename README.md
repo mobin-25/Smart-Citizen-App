@@ -16,3 +16,10 @@ A citizen grievance and civic issue reporting platform.
 - Cloud Firestore
 - Firebase Storage
 - Firebase Cloud Messaging
+
+## Modules
+
+- Citizen App
+- Admin Panel
+- Firebase
+- Integration & Smart Features

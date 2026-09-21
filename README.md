@@ -1,16 +1,18 @@
-# citizen_app
+# Smart Citizen App
 
-A new Flutter project.
+A citizen grievance and civic issue reporting platform.
 
-## Getting Started
+## Team
 
-This project is a starting point for a Flutter application.
+- Member 1 — Firebase & Database
+- Member 2 — Citizen App
+- Member 3 — Admin Panel
+- Member 4 — Integration & Smart Features
 
-A few resources to get you started if this is your first Flutter project:
+## Tech Stack
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Flutter
+- Firebase Authentication
+- Cloud Firestore
+- Firebase Storage
+- Firebase Cloud Messaging

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'screens/register_screen.dart';
+import 'screens/home_screen.dart';
 
 void main() {
   runApp(const SmartCitizenApp());
@@ -37,7 +38,26 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool obscurePassword = true;
 
+  // Mock OTP action
   void sendOtp() {
+    if (mobileController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter your mobile number first.'),
+        ),
+      );
+      return;
+    }
+
+    if (mobileController.text.trim().length != 10) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter a valid 10-digit mobile number.'),
+        ),
+      );
+      return;
+    }
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Mock OTP sent successfully!'),
@@ -45,10 +65,33 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  // Mock login action
   void login() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Mock login successful!'),
+    if (usernameController.text.trim().isEmpty ||
+        passwordController.text.trim().isEmpty ||
+        mobileController.text.trim().isEmpty ||
+        otpController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please fill in all login details.'),
+        ),
+      );
+      return;
+    }
+
+    if (mobileController.text.trim().length != 10) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter a valid 10-digit mobile number.'),
+        ),
+      );
+      return;
+    }
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const HomeScreen(),
       ),
     );
   }
@@ -71,10 +114,9 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-
               const SizedBox(height: 40),
 
-              // App title
+              // App icon
               const Icon(
                 Icons.location_city,
                 size: 70,
@@ -83,6 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
               const SizedBox(height: 16),
 
+              // App title
               const Text(
                 'Smart Citizen App',
                 textAlign: TextAlign.center,
@@ -148,11 +191,13 @@ class _LoginScreenState extends State<LoginScreen> {
               TextField(
                 controller: mobileController,
                 keyboardType: TextInputType.phone,
+                maxLength: 10,
                 decoration: const InputDecoration(
                   labelText: 'Mobile Number',
-                  hintText: 'Enter mobile number',
+                  hintText: 'Enter 10-digit mobile number',
                   prefixIcon: Icon(Icons.phone),
                   border: OutlineInputBorder(),
+                  counterText: '',
                 ),
               ),
 
@@ -162,11 +207,13 @@ class _LoginScreenState extends State<LoginScreen> {
               TextField(
                 controller: otpController,
                 keyboardType: TextInputType.number,
+                maxLength: 6,
                 decoration: const InputDecoration(
                   labelText: 'OTP',
                   hintText: 'Enter OTP',
                   prefixIcon: Icon(Icons.verified),
                   border: OutlineInputBorder(),
+                  counterText: '',
                 ),
               ),
 

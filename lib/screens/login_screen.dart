@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'register_screen.dart';
+
 import 'home_screen.dart';
+import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -10,72 +11,76 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final usernameController = TextEditingController();
+  final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final mobileController = TextEditingController();
-  final otpController = TextEditingController();
 
   bool obscurePassword = true;
+  bool isLoggingIn = false;
 
   // =========================
-  // MOCK OTP
+  // LOGIN
   // =========================
 
-  void sendOtp() {
-    if (mobileController.text.trim().isEmpty) {
+  Future<void> login() async {
+    final email = emailController.text.trim();
+    final password = passwordController.text;
+
+    // Check empty fields
+    if (email.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Please enter your mobile number first.'),
+          content: Text('Please enter your email address.'),
         ),
       );
       return;
     }
 
-    if (mobileController.text.trim().length != 10) {
+    if (password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text(
-            'Please enter a valid 10-digit mobile number.',
-          ),
+          content: Text('Please enter your password.'),
         ),
       );
       return;
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Mock OTP sent successfully!'),
-      ),
+    // Check email format
+    final emailRegex = RegExp(
+      r'^[^@\s]+@[^@\s]+\.[^@\s]+$',
     );
-  }
 
-  // =========================
-  // MOCK LOGIN
-  // =========================
-
-  void login() {
-    if (usernameController.text.trim().isEmpty ||
-        passwordController.text.trim().isEmpty ||
-        mobileController.text.trim().isEmpty ||
-        otpController.text.trim().isEmpty) {
+    if (!emailRegex.hasMatch(email)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Please fill in all login details.'),
+          content: Text('Please enter a valid email address.'),
         ),
       );
       return;
     }
 
-    if (mobileController.text.trim().length != 10) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Please enter a valid 10-digit mobile number.',
-          ),
-        ),
-      );
+    // Prevent multiple login requests
+    if (isLoggingIn) {
       return;
     }
+
+    setState(() {
+      isLoggingIn = true;
+    });
+
+    // Frontend-only login simulation.
+    // Firebase authentication will be integrated separately
+    // by the backend/Firebase team.
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    if (!mounted) return;
+
+    setState(() {
+      isLoggingIn = false;
+    });
+
+    // =========================
+    // LOGIN SUCCESSFUL
+    // =========================
 
     Navigator.pushReplacement(
       context,
@@ -87,10 +92,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
-    usernameController.dispose();
+    emailController.dispose();
     passwordController.dispose();
-    mobileController.dispose();
-    otpController.dispose();
+
     super.dispose();
   }
 
@@ -109,10 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
             children: [
               const SizedBox(height: 40),
 
-              // =========================
-              // APP ICON
-              // =========================
-
+              // App icon
               const Icon(
                 Icons.location_city,
                 size: 70,
@@ -121,10 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
               const SizedBox(height: 16),
 
-              // =========================
-              // APP TITLE
-              // =========================
-
+              // App title
               const Text(
                 'Smart Citizen App',
                 textAlign: TextAlign.center,
@@ -147,26 +145,21 @@ class _LoginScreenState extends State<LoginScreen> {
 
               const SizedBox(height: 35),
 
-              // =========================
-              // USERNAME
-              // =========================
-
+              // Email
               TextField(
-                controller: usernameController,
+                controller: emailController,
+                keyboardType: TextInputType.emailAddress,
                 decoration: const InputDecoration(
-                  labelText: 'Username',
-                  hintText: 'Enter username',
-                  prefixIcon: Icon(Icons.person),
+                  labelText: 'Email',
+                  hintText: 'Enter email',
+                  prefixIcon: Icon(Icons.email),
                   border: OutlineInputBorder(),
                 ),
               ),
 
               const SizedBox(height: 16),
 
-              // =========================
-              // PASSWORD
-              // =========================
-
+              // Password
               TextField(
                 controller: passwordController,
                 obscureText: obscurePassword,
@@ -190,92 +183,41 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
 
-              const SizedBox(height: 16),
-
-              // =========================
-              // MOBILE NUMBER
-              // =========================
-
-              TextField(
-                controller: mobileController,
-                keyboardType: TextInputType.phone,
-                maxLength: 10,
-                decoration: const InputDecoration(
-                  labelText: 'Mobile Number',
-                  hintText: 'Enter 10-digit mobile number',
-                  prefixIcon: Icon(Icons.phone),
-                  border: OutlineInputBorder(),
-                  counterText: '',
-                ),
-              ),
-
-              const SizedBox(height: 16),
-
-              // =========================
-              // OTP
-              // =========================
-
-              TextField(
-                controller: otpController,
-                keyboardType: TextInputType.number,
-                maxLength: 6,
-                decoration: const InputDecoration(
-                  labelText: 'OTP',
-                  hintText: 'Enter OTP',
-                  prefixIcon: Icon(Icons.verified),
-                  border: OutlineInputBorder(),
-                  counterText: '',
-                ),
-              ),
-
               const SizedBox(height: 20),
 
-              // =========================
-              // SEND OTP
-              // =========================
-
-              OutlinedButton(
-                onPressed: sendOtp,
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 15,
-                  ),
-                ),
-                child: const Text(
-                  'Send OTP',
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
-
-              const SizedBox(height: 14),
-
-              // =========================
-              // LOGIN
-              // =========================
-
+              // Login
               ElevatedButton(
-                onPressed: login,
+                onPressed: isLoggingIn ? null : login,
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(
                     vertical: 15,
                   ),
                 ),
-                child: const Text(
-                  'Login',
-                  style: TextStyle(fontSize: 16),
-                ),
+                child: isLoggingIn
+                    ? const SizedBox(
+                        height: 22,
+                        width: 22,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : const Text(
+                        'Login',
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
               ),
 
               const SizedBox(height: 25),
 
-              // =========================
-              // REGISTER
-              // =========================
-
+              // Register
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("Don't have an account? "),
+                  const Text(
+                    "Don't have an account? ",
+                  ),
                   TextButton(
                     onPressed: () {
                       Navigator.push(
